@@ -27,14 +27,14 @@ To run this project locally, follow the steps below:
 `npm run dev`
 
 **Project Structure**
-`├── src/
+├── src/
 │   ├── controllers/        
 │   ├── models/             
 │   ├── interfaces/                          
 │   ├── app.ts              
 │   └── server.ts          
 ├── package.json
-└── tsconfig.json`
+└── tsconfig.json
 
 **Models:** <br> 
 **Book Model:** <br> 
