@@ -15,8 +15,8 @@ To run this project locally, follow the steps below:
 
 **Clone the Repository**
 
-`git clone https://github.com/your-username/library-management-system.git <br> 
-cd library-management-system`
+`git clone https://github.com/your-username/library-management-system.git` <br> 
+`cd library-management-system`
 
 **Install Dependencies** <br> 
 `npm install`
@@ -24,7 +24,7 @@ cd library-management-system`
 **Start Development Server** <br> 
 `npm run dev`
 
-**Project Structure** <br> 
+**Project Structure**
 ├── src/
 │   ├── controllers/        
 │   ├── models/             
@@ -44,29 +44,29 @@ cd library-management-system`
 6. copies (number) – Required, must be a non-negative integer
 7. available (boolean) – Automatically updated based on copies
 
-**Borrow Model**
+**Borrow Model** <br> 
 1. book (ObjectId) – Reference to the Book
 2. quantity (number) – Number of copies borrowed
 3. dueDate (Date) – Expected return date
 
-**Features**
-**Book Management (CRUD)**
+**Features** <br> 
+**Book Management (CRUD)** <br> 
 1. Create a book: Add a new book to the collection with all required fields. ISBN is auto-generated if not supplied.
 2. Read (Get) books: Retrieve books using filters, sorting and limit via query parameters.
 3. Update book: Modify book details like title, author, description, or available copies.
 4. Delete book: Remove a book permanently from the system.
 
-**Borrowing System**
+**Borrowing System** <br> 
 1. Borrow a book: Users can borrow books if the number of available copies is sufficient.
 2. Automatic inventory update: The system decreases the number of copies when a book is borrowed.
 3. Auto set availability: If a book’s copies reach 0, it is automatically marked as available: false using a Mongoose instance method.
 4. Validation: Prevents over-borrowing if requested quantity exceeds available stock.
 
 
-**Borrow Summary Endpoint**
-Displays the total borrowed quantity of each book.
-***Example Output:***
-``[
+**Borrow Summary Endpoint** <br> 
+Displays the total borrowed quantity of each book. <br> 
+***Example Output:*** <br> 
+`[
   {
     "book": {
       "title": "The Theory of Everything",
@@ -81,28 +81,28 @@ Displays the total borrowed quantity of each book.
     },
     "totalQuantity": 3
   }
-]``
+]`
 
-**Technologies Used**
+**Technologies Used** <br> 
 1. Node.js – JavaScript runtime
 2. Express.js – Backend web framework
 3. MongoDB – NoSQL database
 4. Mongoose – MongoDB ODM for schema validation
 5. TypeScript – For strong typing and developer tooling
 
-** Error Handling**
-The project includes a centralized global error handler, which captures and formats all runtime, validation, and custom errors in a consistent JSON format.
-**Example Error Response**
-``{
+** Error Handling** <br> 
+The project includes a centralized global error handler, which captures and formats all runtime, validation, and custom errors in a consistent JSON format. <br> 
+**Example Error Response** <br> 
+`{ 
   "success": false,
   "message": "Book validation failed: copies must be a non-negative integer",
   "error": {
     "name": "ValidationError",
     "path": "copies"
   }
-}``
+}`
 
-**Future Enhancements (Ideas)**
+**Future Enhancements (Ideas)** <br> 
 * JWT-based user authentication
 * Admin/user roles for managing books vs borrowing
 * Overdue fine calculations
