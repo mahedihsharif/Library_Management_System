@@ -13,10 +13,10 @@ To run this project locally, follow the steps below:
 - npm (v9 or higher)
 - MongoDB (local or cloud, like MongoDB Atlas)
 
-###Clone the Repository
+**Clone the Repository**
 
 `git clone https://github.com/your-username/library-management-system.git
 cd library-management-system`
 
-###Install Dependencies
+## **Install Dependencies**
 `npm install`
