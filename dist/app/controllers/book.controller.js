@@ -19,7 +19,6 @@ const bookRouter = express_1.default.Router();
 bookRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
-        console.log(body.isbn);
         const newBook = yield book_model_1.default.create(body);
         res.status(201).json({
             success: true,
@@ -39,15 +38,15 @@ bookRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
 bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { filter, sortBy, sort, limit } = req.query;
-        // //filter match based on genre
+        //filter match based on genre
         const matchQuery = {};
         if (typeof filter === "string") {
             matchQuery.genre = filter;
         }
-        // //sort by createdAt and sorting by asc or dsc
+        //sort by createdAt and sorting by asc or dsc
         const sortField = typeof sortBy === "string" ? sortBy : "createdAt";
         const sortOrder = sort === "asc" ? 1 : -1;
-        // //parse limit value
+        //parse limit value
         let limitNumber = 10;
         if (typeof limit === "string") {
             const parsed = parseInt(limit, 10);
@@ -55,29 +54,26 @@ bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 limitNumber = parsed;
             }
         }
-        const books = yield book_model_1.default.find(matchQuery)
-            .sort({ [sortField]: sortOrder })
-            .limit(limitNumber);
-        if (books) {
-            res.status(200).json({
+        //check condition for query values if any of this query available it works.
+        if (filter || sortBy || sort || limit) {
+            const books = yield book_model_1.default.find(matchQuery)
+                .sort({ [sortField]: sortOrder })
+                .limit(limitNumber);
+            return res.status(200).json({
                 success: true,
                 message: "Books retrieved successfully",
                 data: books,
             });
         }
+        //if no query available so all data will retrieved.
         else {
             const books = yield book_model_1.default.find();
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Books retrieved successfully",
                 data: books,
             });
         }
-        res.status(200).json({
-            success: true,
-            message: "Books retrieved successfully",
-            data: books,
-        });
     }
     catch (error) {
         res.status(400).json({
@@ -92,6 +88,13 @@ bookRouter.get("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const { bookId } = req.params;
         const book = yield book_model_1.default.findById(bookId);
+        //if not found this book
+        if (!book) {
+            res.status(404).json({
+                message: "Book not found!",
+            });
+        }
+        //if found this book
         res.status(200).json({
             success: true,
             message: "Book retrieved successfully",
@@ -110,6 +113,12 @@ bookRouter.get("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
 bookRouter.put("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { bookId } = req.params;
+        const existingBook = yield book_model_1.default.findById(bookId);
+        if (!existingBook) {
+            return res.status(404).json({
+                message: "Book not found to update",
+            });
+        }
         const updatedBook = yield book_model_1.default.findByIdAndUpdate(bookId, req.body, {
             new: true,
         });
@@ -131,6 +140,12 @@ bookRouter.put("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
 bookRouter.delete("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { bookId } = req.params;
+        const existingBook = yield book_model_1.default.findById(bookId);
+        if (!existingBook) {
+            return res.status(404).json({
+                message: "Book not found to delete",
+            });
+        }
         yield book_model_1.default.findOneAndDelete({ _id: bookId });
         res.status(200).json({
             success: true,

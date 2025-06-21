@@ -7,7 +7,6 @@ const bookRouter = express.Router();
 bookRouter.post("/", async (req: Request, res: Response) => {
   try {
     const body = req.body;
-    console.log(body.isbn);
     const newBook = await Book.create(body);
     res.status(201).json({
       success: true,
@@ -24,20 +23,20 @@ bookRouter.post("/", async (req: Request, res: Response) => {
 });
 
 //get books based on filter
-bookRouter.get("/", async (req: Request, res: Response) => {
+bookRouter.get("/", async (req: Request, res: Response): Promise<any> => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
-    // //filter match based on genre
+    //filter match based on genre
     const matchQuery: Record<string, any> = {};
     if (typeof filter === "string") {
       matchQuery.genre = filter;
     }
 
-    // //sort by createdAt and sorting by asc or dsc
+    //sort by createdAt and sorting by asc or dsc
     const sortField = typeof sortBy === "string" ? sortBy : "createdAt";
     const sortOrder: 1 | -1 = sort === "asc" ? 1 : -1;
 
-    // //parse limit value
+    //parse limit value
     let limitNumber = 10;
     if (typeof limit === "string") {
       const parsed = parseInt(limit, 10);
@@ -46,30 +45,26 @@ bookRouter.get("/", async (req: Request, res: Response) => {
       }
     }
 
-    const books = await Book.find(matchQuery)
-      .sort({ [sortField]: sortOrder })
-      .limit(limitNumber);
-
-    if (books) {
-      res.status(200).json({
-        success: true,
-        message: "Books retrieved successfully",
-        data: books,
-      });
-    } else {
-      const books = await Book.find();
-      res.status(200).json({
+    //check condition for query values if any of this query available it works.
+    if (filter || sortBy || sort || limit) {
+      const books = await Book.find(matchQuery)
+        .sort({ [sortField]: sortOrder })
+        .limit(limitNumber);
+      return res.status(200).json({
         success: true,
         message: "Books retrieved successfully",
         data: books,
       });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "Books retrieved successfully",
-      data: books,
-    });
+    //if no query available so all data will retrieved.
+    else {
+      const books = await Book.find();
+      return res.status(200).json({
+        success: true,
+        message: "Books retrieved successfully",
+        data: books,
+      });
+    }
   } catch (error: any) {
     res.status(400).json({
       success: false,
@@ -80,63 +75,91 @@ bookRouter.get("/", async (req: Request, res: Response) => {
 });
 
 //get a single user
-bookRouter.get("/:bookId", async (req: Request, res: Response) => {
-  try {
-    const { bookId } = req.params;
-    const book = await Book.findById(bookId);
-    res.status(200).json({
-      success: true,
-      message: "Book retrieved successfully",
-      data: book,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-      error,
-    });
+bookRouter.get(
+  "/:bookId",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { bookId } = req.params;
+      const book = await Book.findById(bookId);
+      //if not found this book
+      if (!book) {
+        res.status(404).json({
+          message: "Book not found!",
+        });
+      }
+      //if found this book
+      res.status(200).json({
+        success: true,
+        message: "Book retrieved successfully",
+        data: book,
+      });
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
   }
-});
+);
 
 //update a note
-bookRouter.put("/:bookId", async (req: Request, res: Response) => {
-  try {
-    const { bookId } = req.params;
-    const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
-      new: true,
-    });
-    res.status(200).json({
-      success: true,
-      message: "Book updated successfully",
-      data: updatedBook,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-      error,
-    });
+bookRouter.put(
+  "/:bookId",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { bookId } = req.params;
+      const existingBook = await Book.findById(bookId);
+      if (!existingBook) {
+        return res.status(404).json({
+          message: "Book not found to update",
+        });
+      }
+      const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
+        new: true,
+      });
+      res.status(200).json({
+        success: true,
+        message: "Book updated successfully",
+        data: updatedBook,
+      });
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
   }
-});
+);
 
 //update a user
-bookRouter.delete("/:bookId", async (req: Request, res: Response) => {
-  try {
-    const { bookId } = req.params;
-    await Book.findOneAndDelete({ _id: bookId });
+bookRouter.delete(
+  "/:bookId",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { bookId } = req.params;
+      const existingBook = await Book.findById(bookId);
+      if (!existingBook) {
+        return res.status(404).json({
+          message: "Book not found to delete",
+        });
+      }
+      await Book.findOneAndDelete({ _id: bookId });
 
-    res.status(200).json({
-      success: true,
-      message: "Book deleted successfully",
-      data: null,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-      error,
-    });
+      res.status(200).json({
+        success: true,
+        message: "Book deleted successfully",
+        data: null,
+      });
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
   }
-});
+);
 
 export default bookRouter;

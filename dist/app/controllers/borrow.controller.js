@@ -88,14 +88,14 @@ borrowRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             },
         ]);
         if (summary.length > 0) {
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Borrowed books summary retrieved successfully",
                 data: summary,
             });
         }
         else {
-            res.status(201).json({
+            return res.status(404).json({
                 success: true,
                 message: "No book found to retrieved",
             });

@@ -1,5 +1,6 @@
 import { Model, model, Schema } from "mongoose";
 import { BookInstanceMethods, IBook } from "../interfaces/book.interface";
+import Borrow from "./borrow.model";
 
 //dynamic generate ISBN
 const generateISBN = () => {
@@ -65,6 +66,14 @@ bookSchema.method("updateAvailability", async function () {
 bookSchema.pre("save", function (next) {
   if (!this.isbn) {
     this.isbn = generateISBN();
+  }
+  next();
+});
+
+//post hooks
+bookSchema.post("findOneAndDelete", async function (doc, next) {
+  if (doc) {
+    await Borrow.deleteMany({ book: doc._id });
   }
   next();
 });

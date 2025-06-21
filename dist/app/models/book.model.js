@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const borrow_model_1 = __importDefault(require("./borrow.model"));
 //dynamic generate ISBN
 const generateISBN = () => {
     return "978" + Math.floor(1000000000 + Math.random() * 9000000000);
@@ -72,6 +76,15 @@ bookSchema.pre("save", function (next) {
         this.isbn = generateISBN();
     }
     next();
+});
+//post hooks
+bookSchema.post("findOneAndDelete", function (doc, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (doc) {
+            yield borrow_model_1.default.deleteMany({ book: doc._id });
+        }
+        next();
+    });
 });
 const Book = (0, mongoose_1.model)("Book", bookSchema);
 exports.default = Book;

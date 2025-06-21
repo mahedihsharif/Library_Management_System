@@ -54,7 +54,7 @@ borrowRouter.post("/", async (req: Request, res: Response): Promise<any> => {
 });
 
 //get all borrow book
-borrowRouter.get("/", async (req: Request, res: Response) => {
+borrowRouter.get("/", async (req: Request, res: Response): Promise<any> => {
   try {
     const summary = await Borrow.aggregate([
       {
@@ -84,13 +84,13 @@ borrowRouter.get("/", async (req: Request, res: Response) => {
     ]);
 
     if (summary.length > 0) {
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message: "Borrowed books summary retrieved successfully",
         data: summary,
       });
     } else {
-      res.status(201).json({
+      return res.status(404).json({
         success: true,
         message: "No book found to retrieved",
       });
