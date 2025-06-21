@@ -39,13 +39,13 @@ borrowRouter.post("/", async (req: Request, res: Response): Promise<any> => {
       dueDate,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Book borrowed successfully.",
       data: borrowBook,
     });
   } catch (error: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
       error,
@@ -96,7 +96,7 @@ borrowRouter.get("/", async (req: Request, res: Response): Promise<any> => {
       });
     }
   } catch (error: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
       error,

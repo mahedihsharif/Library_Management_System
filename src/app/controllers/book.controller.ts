@@ -4,7 +4,7 @@ import Book from "../models/book.model";
 const bookRouter = express.Router();
 
 //create a new book
-bookRouter.post("/", async (req: Request, res: Response) => {
+bookRouter.post("/", async (req: Request, res: Response): Promise<any> => {
   try {
     const body = req.body;
     const newBook = await Book.create(body);
@@ -66,7 +66,7 @@ bookRouter.get("/", async (req: Request, res: Response): Promise<any> => {
       });
     }
   } catch (error: any) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
       error,
@@ -83,18 +83,18 @@ bookRouter.get(
       const book = await Book.findById(bookId);
       //if not found this book
       if (!book) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Book not found!",
         });
       }
       //if found this book
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Book retrieved successfully",
         data: book,
       });
     } catch (error: any) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: error.message,
         error,
@@ -118,13 +118,13 @@ bookRouter.put(
       const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
         new: true,
       });
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Book updated successfully",
         data: updatedBook,
       });
     } catch (error: any) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: error.message,
         error,
@@ -147,13 +147,13 @@ bookRouter.delete(
       }
       await Book.findOneAndDelete({ _id: bookId });
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Book deleted successfully",
         data: null,
       });
     } catch (error: any) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: error.message,
         error,
