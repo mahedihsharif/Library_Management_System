@@ -27,17 +27,17 @@ To run this project locally, follow the steps below:
 `npm run dev`
 
 **Project Structure**
-``├── src/
+`├── src/
 │   ├── controllers/        
 │   ├── models/             
 │   ├── interfaces/                          
 │   ├── app.ts              
 │   └── server.ts          
 ├── package.json
-└── tsconfig.json``
+└── tsconfig.json`
 
-<u>**Models:**</u> <br> 
-<u>**Book Model:**</u> <br> 
+**Models:** <br> 
+**Book Model:** <br> 
 1. title (string) – Required
 2. author (string) – Required
 3. genre (enum) – One of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY
