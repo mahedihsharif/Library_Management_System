@@ -15,7 +15,7 @@ To run this project locally, follow the steps below:
 
 **Clone the Repository**
 
-`git clone https://github.com/your-username/library-management-system.git
+`git clone https://github.com/your-username/library-management-system.git  
 cd library-management-system`
 
 **Install Dependencies**
