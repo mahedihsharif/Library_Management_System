@@ -1,3 +1,5 @@
+**Api Live Link:** https://library-management-system-six-dusky.vercel.app/
+
 **Library Management System API**
 
 The **Library Management System API** is a robust RESTful service built using Node.js**, **Express**, **Mongoose**, and **TypeScript**. It enables users to manage a collection of books, borrow books, and track borrowing records with real-time updates to inventory. This backend system is for educational use.
