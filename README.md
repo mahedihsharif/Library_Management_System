@@ -15,16 +15,16 @@ To run this project locally, follow the steps below:
 
 **Clone the Repository**
 
-`git clone https://github.com/your-username/library-management-system.git  
+`git clone https://github.com/your-username/library-management-system.git <br> 
 cd library-management-system`
 
-**Install Dependencies**
+**Install Dependencies** <br> 
 `npm install`
 
-**Start Development Server**
+**Start Development Server** <br> 
 `npm run dev`
 
-**Project Structure**
+**Project Structure** <br> 
 ├── src/
 │   ├── controllers/        
 │   ├── models/             
@@ -34,8 +34,8 @@ cd library-management-system`
 ├── package.json
 └── tsconfig.json
 
-*Models*
-**Book Model**
+*Models* <br> 
+**Book Model** <br> 
 1. title (string) – Required
 2. author (string) – Required
 3. genre (enum) – One of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY
