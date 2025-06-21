@@ -44,14 +44,14 @@ borrowRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function*
             quantity,
             dueDate,
         });
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Book borrowed successfully.",
             data: borrowBook,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,
@@ -102,7 +102,7 @@ borrowRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,

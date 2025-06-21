@@ -12,15 +12,15 @@ app.use(express_1.default.json());
 //routing
 app.use("/api/books", book_controller_1.default);
 app.use("/api/borrow", borrow_controller_1.default);
+app.get("/", (req, res) => {
+    res.send("Welcome to Library Management System!");
+});
 //not found route
 app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: `Route not found: ${req.originalUrl}`,
     });
-});
-app.get("/", (req, res) => {
-    res.send("Welcome to Library Management System!");
 });
 //global error handler
 app.use((err, req, res, next) => {

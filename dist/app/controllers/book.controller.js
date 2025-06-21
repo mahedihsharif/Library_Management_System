@@ -76,7 +76,7 @@ bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,
@@ -90,19 +90,19 @@ bookRouter.get("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
         const book = yield book_model_1.default.findById(bookId);
         //if not found this book
         if (!book) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Book not found!",
             });
         }
         //if found this book
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Book retrieved successfully",
             data: book,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,
@@ -122,14 +122,14 @@ bookRouter.put("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
         const updatedBook = yield book_model_1.default.findByIdAndUpdate(bookId, req.body, {
             new: true,
         });
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Book updated successfully",
             data: updatedBook,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,
@@ -147,14 +147,14 @@ bookRouter.delete("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, fu
             });
         }
         yield book_model_1.default.findOneAndDelete({ _id: bookId });
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Book deleted successfully",
             data: null,
         });
     }
     catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: error.message,
             error,
