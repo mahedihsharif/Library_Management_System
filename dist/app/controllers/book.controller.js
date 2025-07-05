@@ -19,6 +19,14 @@ const bookRouter = express_1.default.Router();
 bookRouter.post("/create-book", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
+        const isbnData = yield book_model_1.default.findOne({ isbn: body.isbn });
+        if (isbnData && isbnData.isbn) {
+            return res.status(404).json({
+                success: false,
+                message: "ISBN already exists!",
+                data: null,
+            });
+        }
         const newBook = yield book_model_1.default.create(body);
         res.status(201).json({
             success: true,

@@ -4,23 +4,34 @@ import Book from "../models/book.model";
 const bookRouter = express.Router();
 
 //create a new book
-bookRouter.post("/create-book", async (req: Request, res: Response) => {
-  try {
-    const body = req.body;
-    const newBook = await Book.create(body);
-    res.status(201).json({
-      success: true,
-      message: "Book created successfully",
-      data: newBook,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-      error,
-    });
+bookRouter.post(
+  "/create-book",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const body = req.body;
+      const isbnData = await Book.findOne({ isbn: body.isbn });
+      if (isbnData && isbnData.isbn) {
+        return res.status(404).json({
+          success: false,
+          message: "ISBN already exists!",
+          data: null,
+        });
+      }
+      const newBook = await Book.create(body);
+      res.status(201).json({
+        success: true,
+        message: "Book created successfully",
+        data: newBook,
+      });
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+        error,
+      });
+    }
   }
-});
+);
 
 //get books based on filter
 bookRouter.get("/books", async (req: Request, res: Response): Promise<any> => {
