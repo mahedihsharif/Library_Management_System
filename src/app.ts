@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
 import bookRouter from "./app/controllers/book.controller";
 import borrowRouter from "./app/controllers/borrow.controller";
@@ -5,10 +6,15 @@ import borrowRouter from "./app/controllers/borrow.controller";
 const app: Application = express();
 //middleware for received json data
 app.use(express.json());
+app.use(
+  cors({
+    origin: "https://library-management-app-one-mu.vercel.app",
+  })
+);
 
 //routing
-app.use("/api/books", bookRouter);
-app.use("/api/borrow", borrowRouter);
+app.use("/api", bookRouter);
+app.use("/api", borrowRouter);
 
 //not found route
 app.use((req: Request, res: Response) => {

@@ -4,7 +4,7 @@ import Book from "../models/book.model";
 const bookRouter = express.Router();
 
 //create a new book
-bookRouter.post("/", async (req: Request, res: Response) => {
+bookRouter.post("/create-book", async (req: Request, res: Response) => {
   try {
     const body = req.body;
     const newBook = await Book.create(body);
@@ -23,7 +23,7 @@ bookRouter.post("/", async (req: Request, res: Response) => {
 });
 
 //get books based on filter
-bookRouter.get("/", async (req: Request, res: Response): Promise<any> => {
+bookRouter.get("/books", async (req: Request, res: Response): Promise<any> => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
     //filter match based on genre
@@ -58,7 +58,7 @@ bookRouter.get("/", async (req: Request, res: Response): Promise<any> => {
     }
     //if no query available so all data will retrieved.
     else {
-      const books = await Book.find();
+      const books = await Book.find().sort({ createdAt: -1 });
       return res.status(200).json({
         success: true,
         message: "Books retrieved successfully",
@@ -74,13 +74,13 @@ bookRouter.get("/", async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-//get a single user
+//get a single book
 bookRouter.get(
-  "/:bookId",
+  "/books/:id",
   async (req: Request, res: Response): Promise<any> => {
     try {
-      const { bookId } = req.params;
-      const book = await Book.findById(bookId);
+      const { id } = req.params;
+      const book = await Book.findById(id);
       //if not found this book
       if (!book) {
         res.status(404).json({
@@ -105,19 +105,26 @@ bookRouter.get(
 
 //update a note
 bookRouter.put(
-  "/:bookId",
+  "/edit-book/:id",
   async (req: Request, res: Response): Promise<any> => {
+    const { data: updatedBookData } = req.body;
+
     try {
-      const { bookId } = req.params;
-      const existingBook = await Book.findById(bookId);
+      const { id } = req.params;
+      const existingBook = await Book.findById(id);
       if (!existingBook) {
         return res.status(404).json({
           message: "Book not found to update",
         });
       }
-      const updatedBook = await Book.findByIdAndUpdate(bookId, req.body, {
+      const updatedBook = await Book.findByIdAndUpdate(id, updatedBookData, {
         new: true,
       });
+      if (updatedBook && updatedBook.copies > 0) {
+        updatedBook.updateAvailability();
+        updatedBook.save();
+      }
+
       res.status(200).json({
         success: true,
         message: "Book updated successfully",
@@ -135,7 +142,7 @@ bookRouter.put(
 
 //update a user
 bookRouter.delete(
-  "/:bookId",
+  "/books/:bookId",
   async (req: Request, res: Response): Promise<any> => {
     try {
       const { bookId } = req.params;
