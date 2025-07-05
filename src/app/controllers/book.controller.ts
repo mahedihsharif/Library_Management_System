@@ -107,16 +107,25 @@ bookRouter.get(
 bookRouter.put(
   "/edit-book/:id",
   async (req: Request, res: Response): Promise<any> => {
-    const { data: updatedBookData } = req.body;
-
     try {
       const { id } = req.params;
+      const updatedBookData = req.body;
+
       const existingBook = await Book.findById(id);
       if (!existingBook) {
         return res.status(404).json({
           message: "Book not found to update",
         });
       }
+
+      if (!updatedBookData) {
+        return res.status(200).json({
+          success: false,
+          message: "Book Data Not Found to Update Book",
+          data: null,
+        });
+      }
+
       const updatedBook = await Book.findByIdAndUpdate(id, updatedBookData, {
         new: true,
       });
