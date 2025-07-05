@@ -16,22 +16,25 @@ const express_1 = __importDefault(require("express"));
 const book_model_1 = __importDefault(require("../models/book.model"));
 const borrow_model_1 = __importDefault(require("../models/borrow.model"));
 const borrowRouter = express_1.default.Router();
-//create a borrow book
-borrowRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//create a borrow book with params id
+borrowRouter.post("/borrow/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { book, quantity, dueDate } = req.body;
+        const { bookId } = req.params;
+        const { quantity, dueDate } = req.body;
         //check if not found anything like: book, quantity and dueDate..
-        if (!book || !quantity || !dueDate) {
+        if (!bookId || !quantity || !dueDate) {
             return res.status(400).json({ message: "Missing required fields." });
         }
         //Find the book
-        const foundBook = yield book_model_1.default.findById(book);
+        const foundBook = yield book_model_1.default.findById(bookId);
         if (!foundBook) {
             return res.status(404).json({ message: "Book not found." });
         }
         //Check available copies
         if (foundBook.copies < quantity) {
-            return res.status(400).json({ message: "Not enough copies available." });
+            return res
+                .status(400)
+                .json({ message: "Not enough copies available." });
         }
         //Deduct copies
         foundBook.copies -= quantity;
@@ -39,11 +42,12 @@ borrowRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function*
         foundBook.updateAvailability();
         //Save book and borrow record
         yield foundBook.save();
-        const borrowBook = yield borrow_model_1.default.create({
-            book,
-            quantity,
-            dueDate,
-        });
+        const borrowBookData = {
+            book: bookId,
+            quantity: quantity,
+            dueDate: dueDate,
+        };
+        const borrowBook = yield borrow_model_1.default.create(borrowBookData);
         res.status(201).json({
             success: true,
             message: "Book borrowed successfully.",
@@ -58,8 +62,54 @@ borrowRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 }));
+//create a borrow book without params id
+// borrowRouter.post(
+//   "/borrow",
+//   async (req: Request, res: Response): Promise<any> => {
+//     try {
+//       const { book, quantity, dueDate } = req.body;
+//       //check if not found anything like: book, quantity and dueDate..
+//       if (!book || !quantity || !dueDate) {
+//         return res.status(400).json({ message: "Missing required fields." });
+//       }
+//       //Find the book
+//       const foundBook = await Book.findById(book);
+//       if (!foundBook) {
+//         return res.status(404).json({ message: "Book not found." });
+//       }
+//       //Check available copies
+//       if (foundBook.copies < quantity) {
+//         return res
+//           .status(400)
+//           .json({ message: "Not enough copies available." });
+//       }
+//       //Deduct copies
+//       foundBook.copies -= quantity;
+//       //Update availability
+//       foundBook.updateAvailability();
+//       //Save book and borrow record
+//       await foundBook.save();
+//       const borrowBook = await Borrow.create({
+//         book,
+//         quantity,
+//         dueDate,
+//       });
+//       res.status(201).json({
+//         success: true,
+//         message: "Book borrowed successfully.",
+//         data: borrowBook,
+//       });
+//     } catch (error: any) {
+//       res.status(400).json({
+//         success: false,
+//         message: error.message,
+//         error,
+//       });
+//     }
+//   }
+// );
 //get all borrow book
-borrowRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+borrowRouter.get("/borrow-summary", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const summary = yield borrow_model_1.default.aggregate([
             {

@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const book_model_1 = __importDefault(require("../models/book.model"));
 const bookRouter = express_1.default.Router();
 //create a new book
-bookRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter.post("/create-book", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
         const newBook = yield book_model_1.default.create(body);
@@ -35,7 +35,7 @@ bookRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 }));
 //get books based on filter
-bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter.get("/books", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { filter, sortBy, sort, limit } = req.query;
         //filter match based on genre
@@ -67,7 +67,7 @@ bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         //if no query available so all data will retrieved.
         else {
-            const books = yield book_model_1.default.find();
+            const books = yield book_model_1.default.find().sort({ createdAt: -1 });
             return res.status(200).json({
                 success: true,
                 message: "Books retrieved successfully",
@@ -83,11 +83,11 @@ bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 }));
-//get a single user
-bookRouter.get("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//get a single book
+bookRouter.get("/books/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bookId } = req.params;
-        const book = yield book_model_1.default.findById(bookId);
+        const { id } = req.params;
+        const book = yield book_model_1.default.findById(id);
         //if not found this book
         if (!book) {
             res.status(404).json({
@@ -110,18 +110,23 @@ bookRouter.get("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 //update a note
-bookRouter.put("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter.put("/edit-book/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data: updatedBookData } = req.body;
     try {
-        const { bookId } = req.params;
-        const existingBook = yield book_model_1.default.findById(bookId);
+        const { id } = req.params;
+        const existingBook = yield book_model_1.default.findById(id);
         if (!existingBook) {
             return res.status(404).json({
                 message: "Book not found to update",
             });
         }
-        const updatedBook = yield book_model_1.default.findByIdAndUpdate(bookId, req.body, {
+        const updatedBook = yield book_model_1.default.findByIdAndUpdate(id, updatedBookData, {
             new: true,
         });
+        if (updatedBook && updatedBook.copies > 0) {
+            updatedBook.updateAvailability();
+            updatedBook.save();
+        }
         res.status(200).json({
             success: true,
             message: "Book updated successfully",
@@ -137,7 +142,7 @@ bookRouter.put("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 //update a user
-bookRouter.delete("/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+bookRouter.delete("/books/:bookId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { bookId } = req.params;
         const existingBook = yield book_model_1.default.findById(bookId);
