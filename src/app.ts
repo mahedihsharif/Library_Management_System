@@ -19,16 +19,16 @@ app.use(
 app.use("/api", bookRouter);
 app.use("/api", borrowRouter);
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("Welcome to Library Management System!");
+});
+
 //not found route
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: `Route not found: ${req.originalUrl}`,
   });
-});
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Library Management System!");
 });
 
 //global error handler
