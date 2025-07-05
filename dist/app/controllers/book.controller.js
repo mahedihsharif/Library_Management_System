@@ -111,13 +111,20 @@ bookRouter.get("/books/:id", (req, res) => __awaiter(void 0, void 0, void 0, fun
 }));
 //update a note
 bookRouter.put("/edit-book/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { data: updatedBookData } = req.body;
     try {
         const { id } = req.params;
+        const updatedBookData = req.body;
         const existingBook = yield book_model_1.default.findById(id);
         if (!existingBook) {
             return res.status(404).json({
                 message: "Book not found to update",
+            });
+        }
+        if (!updatedBookData) {
+            return res.status(200).json({
+                success: false,
+                message: "Book Data Not Found to Update Book",
+                data: null,
             });
         }
         const updatedBook = yield book_model_1.default.findByIdAndUpdate(id, updatedBookData, {
