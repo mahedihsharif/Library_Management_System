@@ -43,6 +43,7 @@ const bookSchema = new mongoose_1.Schema({
     },
     isbn: {
         type: String,
+        required: [true, "isbn is required."],
         unique: true,
         trim: true,
     },
@@ -55,8 +56,10 @@ const bookSchema = new mongoose_1.Schema({
         required: [true, "Copies count is required."],
         min: [0, "Copies cannot be negative."],
         validate: {
-            validator: Number.isInteger,
-            message: "Copies must be an integer.",
+            validator: function (value) {
+                return typeof value === "number" && Number.isInteger(value);
+            },
+            message: "Copies must be a valid integer number.",
         },
     },
     available: {

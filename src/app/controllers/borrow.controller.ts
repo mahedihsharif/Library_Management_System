@@ -10,7 +10,6 @@ borrowRouter.post(
     try {
       const { bookId } = req.params;
       const { quantity, dueDate } = req.body;
-
       //check if not found anything like: book, quantity and dueDate..
       if (!bookId || !quantity || !dueDate) {
         return res.status(400).json({ message: "Missing required fields." });

@@ -137,6 +137,7 @@ bookRouter.put("/edit-book/:id", (req, res) => __awaiter(void 0, void 0, void 0,
         }
         const updatedBook = yield book_model_1.default.findByIdAndUpdate(id, updatedBookData, {
             new: true,
+            runValidators: true,
         });
         if (updatedBook && updatedBook.copies > 0) {
             updatedBook.updateAvailability();

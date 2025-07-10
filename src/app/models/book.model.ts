@@ -33,6 +33,7 @@ const bookSchema = new Schema<IBook, Model<IBook>, BookInstanceMethods>(
     },
     isbn: {
       type: String,
+      required: [true, "isbn is required."],
       unique: true,
       trim: true,
     },
@@ -45,8 +46,10 @@ const bookSchema = new Schema<IBook, Model<IBook>, BookInstanceMethods>(
       required: [true, "Copies count is required."],
       min: [0, "Copies cannot be negative."],
       validate: {
-        validator: Number.isInteger,
-        message: "Copies must be an integer.",
+        validator: function (value: any) {
+          return typeof value === "number" && Number.isInteger(value);
+        },
+        message: "Copies must be a valid integer number.",
       },
     },
     available: {

@@ -121,7 +121,6 @@ bookRouter.put(
     try {
       const { id } = req.params;
       const updatedBookData = req.body;
-
       const existingBook = await Book.findById(id);
       if (!existingBook) {
         return res.status(404).json({
@@ -139,6 +138,7 @@ bookRouter.put(
 
       const updatedBook = await Book.findByIdAndUpdate(id, updatedBookData, {
         new: true,
+        runValidators: true,
       });
       if (updatedBook && updatedBook.copies > 0) {
         updatedBook.updateAvailability();
