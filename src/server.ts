@@ -1,14 +1,13 @@
+import dotenv from "dotenv";
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
-
+dotenv.config();
 let server: Server;
 
 const PORT = 5000;
 async function main() {
-  await mongoose.connect(
-    "mongodb+srv://library_user:library_password@cluster0.r5awo.mongodb.net/library_app?retryWrites=true&w=majority&appName=Cluster0"
-  );
+  await mongoose.connect(`${process.env.MONGODB_URI}`);
   console.log("Mongodb connected successfully!");
   try {
     server = app.listen(PORT, () => {
